@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import FastAPI, APIRouter, Depends
 
 from db import models
-from routes import mountains, production_only, users
+from routes import mountains, production_only, users, achievements, qr
 from fastapi.middleware.cors import CORSMiddleware
 from db.database import engine
 
@@ -27,5 +27,7 @@ app.add_middleware(
 
 app.include_router(mountains.router, tags=['Mountains'], prefix='/api/mountains')
 app.include_router(users.router, tags=['Users'], prefix='')
+app.include_router(achievements.router, tags=['Achievements'], prefix='/achievements')
+app.include_router(qr.router, tags=['QR'], prefix='/qr')
 
 app.include_router(production_only.router, tags=['Production tests'], prefix='/test')
