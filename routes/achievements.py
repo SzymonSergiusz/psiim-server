@@ -30,7 +30,7 @@ async def get_all_logged_user_achievements(current_user: Annotated[schemas.User,
 async def get_all_achievements(db: Session = Depends(get_db)):
     return {'achievements': db.query(models.Achievements).all()}
 
-@router.post('add_achievement', status_code=status.HTTP_201_CREATED)
+@router.post('/add_achievement', status_code=status.HTTP_201_CREATED)
 async def add_achievement(payload: schemas.Achievement, db: Session = Depends(get_db)):
     new_achievement = models.Achievements(**payload.dict())
     db.add(new_achievement)
