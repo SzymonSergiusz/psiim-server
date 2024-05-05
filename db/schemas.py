@@ -1,0 +1,76 @@
+from pydantic import BaseModel, EmailStr
+from typing import List, Optional
+from uuid import UUID
+#TODO refactor tego
+class UserBase(BaseModel):
+    username: str
+    email: EmailStr
+
+class UserCreate(UserBase):
+    password: str
+    repeat_password: str
+
+class User(UserBase):
+    user_id: UUID
+
+    class Config:
+        orm_mode = True
+
+class AchievementBase(BaseModel):
+    name: str | None = None
+    description: str | None = None
+
+class Achievement(AchievementBase):
+    achievement_id: UUID
+
+    class Config:
+        orm_mode = True
+
+class MountainBase(BaseModel):
+    mountain_name: str | None = None
+    description: str | None = None
+    image_path: str | None = None
+    image_source: str | None = None
+
+class Mountain(MountainBase):
+    mountain_id: UUID
+
+    class Config:
+        orm_mode = True
+
+class CommentBase(BaseModel):
+    content: str | None = None
+    created_at: str
+
+class CommentCreate(CommentBase):
+    user_id: UUID
+    mountain_id: UUID
+    root_comment_id: Optional[UUID]
+
+class Comment(CommentBase):
+    comment_id: UUID | None = None
+    user: User | None = None
+    mountain: Mountain | None = None
+    replies: List["Comment"] = []
+
+    class Config:
+        orm_mode = True
+
+class Users_AchievementsBase(BaseModel):
+    user_id: UUID
+    achievement_id: UUID
+
+class Users_Achievements(Users_AchievementsBase):
+    id: UUID
+
+    class Config:
+        orm_mode = True
+
+class Users_MountainsBase(BaseModel):
+    user_id: UUID
+    mountain_id: UUID
+
+class Users_Mountains(Users_MountainsBase):
+    id: UUID
+    class Config:
+        orm_mode = True
