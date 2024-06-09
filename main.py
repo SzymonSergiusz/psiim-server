@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import FastAPI, APIRouter, Depends
+from starlette.responses import FileResponse
 
 from db import models
 from routes import mountains, production_only, users, achievements, qr, ranking
@@ -32,3 +33,7 @@ app.include_router(qr.router, tags=['QR'], prefix='/qr')
 app.include_router(ranking.router, tags=['Ranking'], prefix='/ranking')
 
 app.include_router(production_only.router, tags=['Production tests'], prefix='/test')
+
+@app.get('/mountains_img/{image_name}')
+def getImage(image_name: str):
+    return FileResponse(f'mountains_img/{image_name}')

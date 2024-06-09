@@ -37,7 +37,8 @@ class Mountain(MountainBase):
 
     class Config:
         orm_mode = True
-
+class MountainsList(BaseModel):
+    mountains: List[MountainBase]
 class CommentBase(BaseModel):
     content: str | None = None
     created_at: str

@@ -38,10 +38,18 @@ async def add_mountain(payload: schemas.Mountain, db: Session = Depends(get_db))
     db.commit()
     db.refresh(new_mountain)
 
-    # TODO TUTAJ POWINIEN BYĆ SKRYPT DO TWORZENIA KODU QR
-
     return {"status": "success", "mountain": new_mountain}
 
+
+@router.post('/from_array', status_code=status.HTTP_201_CREATED)
+async def add_mountains(payload: schemas.MountainsList, db: Session = Depends(get_db)):
+    new_mountains = [models.Mountains(**mountain.dict()) for mountain in payload.mountains]
+    db.add_all(new_mountains)
+    db.commit()
+    for mountain in new_mountains:
+        db.refresh(mountain)
+
+    return {"status": "success", "mountains": new_mountains}
 
 @router.patch('/id/{mountain_id}')
 async def update_mountain(mountain_id: str, payload: schemas.Mountain, db: Session = Depends(get_db)):
