@@ -12,7 +12,6 @@ from db.database import get_db
 # from fastapi.security import HTTPBasic, HTTPBasicCredentials, OAuth2PasswordBearer
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -25,16 +24,20 @@ async def read_items(token: Annotated[str, Depends(get_current_user)]):
 
 @router.post('/register', status_code=status.HTTP_201_CREATED)
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    if user.password != user.repeat_password:
-        return {"status": "incorrect repeat password"}
+    try:
 
-    hashed_password = pwd_context.hash(user.password)
-    query_user = models.Users(email=user.email,
-                              password=hashed_password, username=user.username)
-    db.add(query_user)
-    db.commit()
-    db.refresh(query_user)
-    return {"status": "success"}
+        if user.password != user.repeat_password:
+            return {"status": "incorrect repeat password"}
+
+        hashed_password = pwd_context.hash(user.password)
+        query_user = models.Users(email=user.email,
+                                  password=hashed_password, username=user.username)
+        db.add(query_user)
+        db.commit()
+        db.refresh(query_user)
+        return {"status": "success"}
+    except:
+        return {"status": "failure"}
 
 
 @router.post('/token')
@@ -49,6 +52,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
         data={"sub": user.email}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return Token(access_token=access_token, token_type="bearer")
+
 
 @router.get('/users_count')
 async def get_user_count(db: Session = Depends(get_db)):

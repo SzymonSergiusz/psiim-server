@@ -3,11 +3,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # sqlite for production
-SQLALCHEMY_DATABASE_URL = 'sqlite:///./sql_app.db'
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+# SQLALCHEMY_DATABASE_URL = 'sqlite:///./sql_app.db'
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:bazydanych@localhost/psiim-db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, echo=True, connect_args={'check_same_thread': False}  # needed for sqlite
+    SQLALCHEMY_DATABASE_URL, echo=True
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
