@@ -67,14 +67,28 @@ async def update_mountain(mountain_id: str, payload: schemas.Mountain, db: Sessi
 @router.get('/users_mountains', status_code=status.HTTP_200_OK)
 async def get_all_logged_user_achievements(current_user: Annotated[schemas.User, Depends(get_current_user)],
                                            db: Session = Depends(get_db)):
+    
+    user_id = current_user.user_id
 
+    user_mountains = db.query(models.Users_Mountains).filter(models.Users_Mountains.user_id == user_id).all()
+    user_mountains_ids = {ua.mountain_id for ua in user_mountains}
 
-    # TODO do dokończenia
-    user: models.Users = current_user
-    #todo do zmiany query
+    all_mountains = db.query(models.Mountains).all()
 
+    achieved = [ach for ach in all_mountains if ach.mountain_id in user_mountains_ids]
+    not_achieved = [ach for ach in all_mountains if ach.mountain_id not in user_mountains_ids]
 
-    return db.query(models.Users_Mountains).filter(models.Users_Mountains.user_id == user.user_id).all()
+    achieved_count = len(achieved)
+    not_achieved_count = len(not_achieved)
+
+    return {
+        "achieved": achieved,
+        "not_achieved": not_achieved,
+        "achieved_count": achieved_count,
+        "not_achieved_count": not_achieved_count
+    }
+
+    # return db.query(models.Users_Mountains).filter(models.Users_Mountains.user_id == user.user_id).all()
 
     # testowo
     # powinno zwrócić zdobyte góry oraz ile jest zdobytych a ile niezdobytych (do tych liczników
