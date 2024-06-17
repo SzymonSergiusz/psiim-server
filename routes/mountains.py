@@ -6,6 +6,7 @@ import db.schemas as schemas
 from auth.authorization import get_current_user
 from db.database import get_db
 import db.models as models
+from datetime import datetime
 
 router = APIRouter()
 
@@ -22,8 +23,39 @@ async def get_mountain(mountain_id: str, db: Session = Depends(get_db)):
     if not mountain:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'Mountain not found')
+    
+    comments = db.query(models.Comments).filter(models.Comments.mountain_id == mountain_id).all()
 
-    return {mountain}
+    users = db.query(models.Users).all()
+
+    for comment in comments:
+        parsed_date = datetime.fromisoformat(str(comment.created_at))
+        formatted_date = parsed_date.strftime("%H:%M %d.%m.%Y")
+        comment.created_at = formatted_date
+        for user in users:
+            if comment.user_id == user.user_id:
+                comment.user_id = user.username
+                break
+
+    comments_with_responses = []
+
+    for comment in comments:
+        comment_with_response = {}
+        if comment.root_comment_id is None:
+            comment_with_response["comment_id"] = comment.comment_id
+            comment_with_response["mountain_id"] = comment.mountain_id
+            comment_with_response["content"] = comment.content
+            comment_with_response["username"] = comment.user_id
+            comment_with_response["root_comment_id"] = comment.root_comment_id
+            comment_with_response["created_at"] = comment.created_at
+            for reply in comments:
+                if reply.root_comment_id == comment.comment_id:
+                    comment_with_response['responses'] = []
+                    comment_with_response['responses'].append(reply)
+        if comment_with_response:            
+            comments_with_responses.append(comment_with_response)                
+
+    return {"mountain": mountain, "comments": comments_with_responses}
 
 
 @router.get('/count', status_code=status.HTTP_200_OK)
@@ -87,9 +119,3 @@ async def get_all_logged_user_achievements(current_user: Annotated[schemas.User,
         "achieved_count": achieved_count,
         "not_achieved_count": not_achieved_count
     }
-
-    # return db.query(models.Users_Mountains).filter(models.Users_Mountains.user_id == user.user_id).all()
-
-    # testowo
-    # powinno zwrócić zdobyte góry oraz ile jest zdobytych a ile niezdobytych (do tych liczników
-    # format: {unlocked: //zdobyte, locked: //niezdobyte, count_unlock, count_unlock}

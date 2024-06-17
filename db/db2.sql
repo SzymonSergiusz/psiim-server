@@ -124,6 +124,8 @@ bbd0a19c-83a9-4022-9504-234d0815a2b6	Miłośnik Sudetów	Zdobądź wszystkie szc
 --
 
 COPY public.comments (comment_id, user_id, mountain_id, root_comment_id, content, created_at) FROM stdin;
+3f3aef19-9f4f-4ce5-892b-d5c0e64df304	262682ee-0bc7-4fc3-92ed-46a1aa58113c	3bd597dd-95ec-4b6a-b7f1-7b2370c65ca3	\N	Ciężko było ale warto.	2024-06-17 11:20:23.815646
+0657ffa4-808f-4861-b2b3-22627dc66b68	47715a13-b5e4-4c28-8269-2078423e565b	3bd597dd-95ec-4b6a-b7f1-7b2370c65ca3	3f3aef19-9f4f-4ce5-892b-d5c0e64df304	Wiem byłem podczas ostatniej pielgrzymki w Polsce.	2024-06-17 12:42:11.302927
 \.
 
 
