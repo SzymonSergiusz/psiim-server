@@ -23,7 +23,7 @@ async def get_mountain(mountain_id: str, db: Session = Depends(get_db)):
     if not mountain:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'Mountain not found')
-    
+
     comments = db.query(models.Comments).filter(models.Comments.mountain_id == mountain_id).all()
 
     users = db.query(models.Users).all()
@@ -48,12 +48,18 @@ async def get_mountain(mountain_id: str, db: Session = Depends(get_db)):
             comment_with_response["username"] = comment.user_id
             comment_with_response["root_comment_id"] = comment.root_comment_id
             comment_with_response["created_at"] = comment.created_at
+            comment_with_response["responses"] = []
             for reply in comments:
                 if reply.root_comment_id == comment.comment_id:
-                    comment_with_response['responses'] = []
-                    comment_with_response['responses'].append(reply)
-        if comment_with_response:            
-            comments_with_responses.append(comment_with_response)                
+                    comment_with_response["responses"].append({
+                        "comment_id": reply.comment_id,
+                        "mountain_id": reply.mountain_id,
+                        "content": reply.content,
+                        "username": reply.user_id,
+                        "root_comment_id": reply.root_comment_id,
+                        "created_at": reply.created_at
+                    })
+            comments_with_responses.append(comment_with_response)
 
     return {"mountain": mountain, "comments": comments_with_responses}
 

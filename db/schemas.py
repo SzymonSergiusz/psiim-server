@@ -1,4 +1,6 @@
-from pydantic import BaseModel, EmailStr
+import datetime
+
+from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional
 from uuid import UUID
 #TODO refactor tego
@@ -41,13 +43,16 @@ class MountainsList(BaseModel):
     mountains: List[MountainBase]
 class CommentBase(BaseModel):
     content: str | None = None
-    created_at: str
+    # created_at: str | None = datetime.date.today()
 
 class CommentCreate(CommentBase):
     user_id: UUID
     mountain_id: UUID
-    root_comment_id: Optional[UUID]
+    root_comment_id: Optional[UUID] = None
 
+class PrimaryCommentCreate(CommentBase):
+    user_id: UUID | None = None
+    mountain_id: UUID | None = None
 class Comment(CommentBase):
     comment_id: UUID | None = None
     user: User | None = None
@@ -72,6 +77,5 @@ class Users_MountainsBase(BaseModel):
     mountain_id: UUID
 
 class Users_Mountains(Users_MountainsBase):
-    id: UUID
     class Config:
         orm_mode = True
