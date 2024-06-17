@@ -15,16 +15,26 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 @router.get('/users_achievements', status_code=status.HTTP_200_OK)
 async def get_all_logged_user_achievements(current_user: Annotated[schemas.User, Depends(get_current_user)],
                                            db: Session = Depends(get_db)):
-    # TODO do dokończenia
-    user: models.Users = current_user
+    
+    user_id = current_user.user_id
 
-    # niedokonczone query, tutaj powinno być select z Mountains które się pokrywają z usersachievs gdzie userid jest takie samo
-    db.query(models.Users_Achievements).filter(models.Users_Achievements.user_id == user.user_id).all()
+    user_achievements = db.query(models.Users_Achievements).filter(models.Users_Achievements.user_id == user_id).all()
+    user_achievements_ids = {ua.achievement_id for ua in user_achievements}
 
-    # testowo
-    # powinno zwrócić zdobyte osiągnięcia, niezdobyte, oraz ile jest zdobytych a ile niezdobytych (do tych liczników
-    # format: {unlocked: //zdobyte, locked: //niezdobyte, count_unlock, count_unlock}
-    return {user.email}
+    all_achievements = db.query(models.Achievements).all()
+
+    achieved = [ach for ach in all_achievements if ach.achievement_id in user_achievements_ids]
+    not_achieved = [ach for ach in all_achievements if ach.achievement_id not in user_achievements_ids]
+
+    achieved_count = len(achieved)
+    not_achieved_count = len(not_achieved)
+
+    return {
+        "achieved": achieved,
+        "not_achieved": not_achieved,
+        "achieved_count": achieved_count,
+        "not_achieved_count": not_achieved_count
+    }
 
 @router.get('/all', status_code=status.HTTP_200_OK)
 async def get_all_achievements(db: Session = Depends(get_db)):
