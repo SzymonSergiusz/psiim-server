@@ -8,8 +8,11 @@ from sqlalchemy.orm import sessionmaker
 # SQLALCHEMY_DATABASE_URL = 'sqlite:///./sql_app.db'
 # SQLALCHEMY_DATABASE_URL = "postgresql://postgres:bazydanych@localhost/psiim-db"
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:bazydanych@localhost/psiim-db")
+# SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:bazydanych@localhost/psiim-db")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
+if not SQLALCHEMY_DATABASE_URL:
+    SQLALCHEMY_DATABASE_URL = "postgresql://postgres:bazydanych@localhost/psiim-db"
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, echo=True
 )
