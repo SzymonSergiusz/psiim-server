@@ -3,7 +3,6 @@ import datetime
 from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional
 from uuid import UUID
-#TODO refactor tego
 class UserBase(BaseModel):
     username: str
     email: EmailStr
@@ -43,7 +42,6 @@ class MountainsList(BaseModel):
     mountains: List[MountainBase]
 class CommentBase(BaseModel):
     content: str | None = None
-    # created_at: str | None = datetime.date.today()
 
 class CommentCreate(CommentBase):
     user_id: UUID
