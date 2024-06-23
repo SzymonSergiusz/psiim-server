@@ -15,7 +15,7 @@ models.Base.metadata.create_all(bind=engine)
 
 origins = [
     "http://localhost:3000",
-    "https://koronagorpolskich.vercel.app/"
+    "https://koronagorpolskich.vercel.app"
 ]
 
 app.add_middleware(
