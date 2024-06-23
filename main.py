@@ -34,7 +34,7 @@ app.include_router(ranking.router, tags=['Ranking'], prefix='/ranking')
 app.include_router(collection.router, tags=['Kolekcja'], prefix='/collection')
 app.include_router(comments.router, tags=['Komentarze'], prefix='/comments')
 
-app.include_router(production_only.router, tags=['Production tests'], prefix='/test')
+# app.include_router(production_only.router, tags=['Production tests'], prefix='/test')
 
 @app.get('/mountains_img/{image_name}')
 def getImage(image_name: str):
