@@ -11,7 +11,7 @@ from db.database import engine
 app = FastAPI()
 router = APIRouter()
 
-# models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 origins = [
     "http://localhost:3000",
