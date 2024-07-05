@@ -4,7 +4,7 @@ from fastapi import FastAPI, APIRouter, Depends
 from starlette.responses import FileResponse
 
 from db import models
-from routes import mountains, production_only, users, achievements, qr, ranking, collection, comments
+from routes import mountains, users, achievements, qr, ranking, collection, comments
 from fastapi.middleware.cors import CORSMiddleware
 from db.database import engine
 
