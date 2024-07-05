@@ -102,3 +102,4 @@ async def user_unlocks_mountain(mountain_id: str, current_user: Annotated[schema
                      
     db.add_all(achievements_to_add)
     db.commit()
+    return {"status": "success"}
