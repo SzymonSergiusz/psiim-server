@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 # TODO czy dodawać to zabezpieczenie czterema cyframi?
-@router.post('/{mountain_id}}', status_code=status.HTTP_201_CREATED)
+@router.post('/{mountain_id}', status_code=status.HTTP_201_CREATED)
 async def user_unlocks_mountain(mountain_id: str, current_user: Annotated[schemas.User, Depends(get_current_user)],
                                            db: Session = Depends(get_db)):
     user_id = current_user.user_id
